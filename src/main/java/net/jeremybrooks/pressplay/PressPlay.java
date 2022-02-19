@@ -1,3 +1,22 @@
+/*
+ * PressPlay is Copyright 2022 by Jeremy Brooks
+ *
+ * This file is part of PressPlay.
+ *
+ * PressPlay is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PressPlay is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PressPlay.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.jeremybrooks.pressplay;
 
 /**
@@ -9,7 +28,7 @@ package net.jeremybrooks.pressplay;
  * If the ffmpeg tools are installed in a different location, you will need to
  * set the system property @{code pressplay.ffmpeg.path} to the correct location of the binaries.
  * <p>
- * For example, if you have ffmpeg tools installed at {@code/opt/ffmpeg/bin/}, set the property as
+ * For example, if you have ffmpeg tools installed at {@code /opt/ffmpeg/bin/}, set the property as
  * follows:
  * <p>
  * {@code System.setProperty("pressplay.ffmpeg.path", "/opt/ffmpeg/bin/");}
