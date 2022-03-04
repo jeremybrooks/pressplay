@@ -40,8 +40,9 @@ export JDK_JAVA_OPTIONS='--add-opens java.base/java.util=ALL-UNNAMED --add-opens
 ```
 
 2. Update the version in pom.xml
-3. Do the release: `mvn clean deploy -Prelease`
-4. If the release is successful:
+3. Update the version in README.md
+4. Do the release: `mvn clean deploy -Prelease`
+5. If the release is successful:
     1. Commit and push
     2. tag the repo `git tag -a x.y.z`
     3. push the tag `git push origin --tags`
