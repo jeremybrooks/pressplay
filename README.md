@@ -30,17 +30,21 @@ pressplay.ffmpeg.path=/full/path/to/tools/
 
 # Releasing
 
-In order to release to Central using Java 17, you need to export some env variables:
+Releasing to Central requires some specific steps:
+
+1. export some JDK options so Java 17 will work:
 
 ```
 export JDK_JAVA_OPTIONS='--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED --add-opens java.desktop/java.awt.font=ALL-UNNAMED'
 ```
 
-Make sure to update the version in pom.xml, then build with the release profile:
+2. Update the version in pom.xml
+3. Commit and push
+4. Do the release: `mvn clean deploy -Prelease`
+5. If the release is successful:
+    1. tag the repo `git tag -a x.y.z`
+    2. push the tag `git push origin --tags`
+    3. update the version in pom.xml for the next snapshot
+    4. commit and push
 
-```
-mvn clean deploy -Prelease
-```
-
-After releasing, tag the code and update the version in pom.xml for the next SNAPSHOT release.
 
