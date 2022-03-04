@@ -57,6 +57,8 @@ public class FFPlay<T> {
     private Process process;
     private boolean stopCalled;
 
+    private Thread shutdownThread;
+
     /**
      * Builder to create an instance of FFPlay.
      *
@@ -136,6 +138,16 @@ public class FFPlay<T> {
         }
     }
 
+    /**
+     * Play the media using ffplay.
+     * <p>This method will start an ffplay process on a separate Thread, so the
+     * caller will not be blocked. It will also register a shutdown hook to
+     * stop the process in the event that the calling application exits before
+     * the playback has completed or the stop method has been called.</p>
+     *
+     * <p>Once the playback has completed or the stop method has been called, the
+     * shutdown hook will be removed.</p>
+     */
     public void play() {
         logger.debug("Playing {} starting at {}ms display={}", media, seekTime.toMillis(), display);
 
@@ -145,7 +157,7 @@ public class FFPlay<T> {
         //       ffplay to show a gui, or not showing the gui
         String nodisp = display ? "-hide_banner" : "-nodisp";
 
-        new Thread(() -> {
+        Runnable ffplay = () -> {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     FFPLAY,
                     "-i",
@@ -165,21 +177,55 @@ public class FFPlay<T> {
                 if (!stopCalled) {
                     logger.warn("Interrupted while playing {}", media, ie);
                 }
+            } finally {
+                Runtime.getRuntime().removeShutdownHook(shutdownThread);
             }
-        }).start();
+        };
+
+        new Thread(ffplay).start();
+
+        shutdownThread = new Thread(new PlayerShutdownHook(this));
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
     }
 
+    /**
+     * Stop any current playback.
+     */
     public void stop() {
         stopCalled = true;
-        process.destroy();
+        if (null != process) {
+            process.destroy();
+        }
     }
 
 
+    /**
+     * Get the media object.
+     *
+     * @return object representing the media to be played.
+     */
     public T getMedia() {
         return media;
     }
 
+    /**
+     * Get the set seek time, which is where playback will begin.
+     *
+     * @return seek time.
+     */
     public Duration getSeekTime() {
         return seekTime;
+    }
+
+    private class PlayerShutdownHook implements Runnable {
+        FFPlay<T> player;
+
+        PlayerShutdownHook(FFPlay<T> player) {
+            this.player = player;
+        }
+
+        public void run() {
+            player.stop();
+        }
     }
 }

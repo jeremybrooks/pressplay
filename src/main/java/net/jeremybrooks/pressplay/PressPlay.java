@@ -19,6 +19,9 @@
 
 package net.jeremybrooks.pressplay;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This class sets up the paths to the ffmpeg binaries that are used by PressPlay.
  * <p>
@@ -34,9 +37,6 @@ package net.jeremybrooks.pressplay;
  * {@code System.setProperty("pressplay.ffmpeg.path", "/opt/ffmpeg/bin/");}
  * <p>
  * or, as a command line option: @{code -Dpressplay.ffmpeg.path=/opt/ffmpeg/bin/}
- * <p>
- * Note the trailing slash - this is important. The binary names will be appended to
- * the value of the system property.
  */
 public class PressPlay {
 
@@ -46,10 +46,15 @@ public class PressPlay {
     private static final String FFMPEG_PATH_PROPERTY = "pressplay.ffmpeg.path";
 
     static {
+        Logger logger = LogManager.getLogger();
         String path = System.getProperty(FFMPEG_PATH_PROPERTY);
         if (path == null || path.trim().length() == 0) {
             path = "/usr/local/bin/";
         }
+        if (!path.endsWith(System.getProperty("file.separator"))) {
+            path = path + System.getProperty("file.separator");
+        }
+        logger.info("Using ffmpeg tools path {}", path);
         FFPROBE = path + "ffprobe";
         FFPLAY = path + "ffplay";
     }
