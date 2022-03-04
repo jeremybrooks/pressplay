@@ -24,21 +24,25 @@ import org.junit.Test;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class FFProbeTest {
 
     @Test
-    public void getDuration() throws Exception {
+    public void getMediaMetadata() throws Exception {
         URL url = FFProbeTest.class.getResource("/Double Violin Concerto 1st Movement - J.S. Bach.mp3");
         assertNotNull(url);
         Path p = Paths.get(url.toURI());
-        Duration duration = FFProbe.getDuration(p.toString());
-        assertNotNull(duration);
-        assertEquals(256, duration.getSeconds());
-        assertEquals(548000000, duration.getNano());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertEquals(256, metadata.getDuration().getSeconds());
+        assertEquals(548000000, metadata.getDuration().getNano());
+        assertEquals("01 - Track 1", metadata.getTitle());
+        assertEquals("Unknown Artist", metadata.getArtist());
+        assertEquals("Unknown Album", metadata.getAlbum());
+        assertEquals("1", metadata.getTrack());
+        assertEquals("", metadata.getDisc());
+        assertFalse(metadata.isCompilation());
     }
 }

@@ -29,34 +29,43 @@ import static net.jeremybrooks.pressplay.PressPlay.FFPLAY;
 
 /**
  * Wrapper around the ffplay command.
- * <p>
- * To play a media asset, create a new instance of FFPlay using the fluent builder.
- * The media must be specified, the other options are, well, optional.
- * <p>
- * You can use any object as the media, as long as the {@code toString()} method of the
+ * <p>To play a media asset, create a new instance of FFPlay using the fluent builder.
+ * The media must be specified, the other options are, well, optional.</p>
+ * <p>You can use any object as the media, as long as the {@code toString()} method of the
  * object results in a string that ffplay can make sense of. This means you can use a
  * Path, File, URL, or a plain old String to specify where to find the media to play.
- * For example, to play a media file located at a Path:
+ * For example, to play a media file located at a Path:</p>
  * <pre>
  * {@code
  *   Path media = Paths.get("/path/to/the/file.mp3");
- *         FFPlay<Path> player = new FFPlay.Builder<Path>()
- *                 .media(media)
- *                 .build();
- *         player.play();
+ *   FFPlay<Path> player = new FFPlay.Builder<Path>()
+ *           .media(media)
+ *           .build();
+ *   player.play();
+ * }
+ * </pre>
+ * <p>After building an FFPlay object, you can access the metadata that was parsed from the
+ * object:</p>
+ * <pre>
+ * {@code
+ *   Path media = Paths.get("/path/to/the/file.mp3");
+ *   FFPlay<Path> player = new FFPlay.Builder<Path>()
+ *           .media(media)
+ *           .build();
+ *   MediaMetadata metadata = player.getMediaMetadata();
+ *   System.out.println("Playing " + metadata.getTitle() + " by " + metadata.getArtist());
+ *   player.play();
  * }
  * </pre>
  */
 public class FFPlay<T> {
     private static final Logger logger = LogManager.getLogger();
-
     private T media;
+    private MediaMetadata mediaMetadata;
     private Duration seekTime;
     private boolean display;
-
     private Process process;
     private boolean stopCalled;
-
     private Thread shutdownThread;
 
     /**
@@ -68,6 +77,7 @@ public class FFPlay<T> {
         private T media;
         private Duration seekTime;
         private boolean display = false;
+        private boolean parseMetadata = true;
 
         /**
          * Set the media to play.
@@ -92,12 +102,28 @@ public class FFPlay<T> {
         }
 
         /**
-         * Sets a flag indicating that ffplay should display a gui during playback.
+         * Sets a flag indicating that ffplay should display a GUI during playback.
+         *
+         * <p>If this method is not called, no GUI will be displayed during playback.</p>
          *
          * @return builder for chaining.
          */
         public Builder<T> display() {
             this.display = true;
+            return this;
+        }
+
+        /**
+         * Sets a flag disabling parsing of metadata for the media.
+         *
+         * <p>By default, metadata will be parsed when build is called.
+         * If you do not want to parse the metadata, call this method and no
+         * metadata will be parsed.</p>
+         *
+         * @return builder for chaining.
+         */
+        public Builder<T> noMetadata() {
+            this.parseMetadata = false;
             return this;
         }
 
@@ -113,33 +139,37 @@ public class FFPlay<T> {
             if (seekTime == null) {
                 seekTime = Duration.ZERO;
             }
-            return new FFPlay<>(media, seekTime, display);
+            return new FFPlay<>(this);
         }
     }
 
+    /* Private constructor to force use of Builder. */
     private FFPlay() {
     }
 
-    private FFPlay(T media, Duration seekTime, boolean display) {
-        this.media = media;
-        this.display = display;
+    private FFPlay(Builder<T> builder) {
+        this.media = builder.media;
+        this.display = builder.display;
         try {
-            Duration duration = FFProbe.getDuration(media.toString());
-            if (duration == null) {
+            if (builder.parseMetadata) {
+                this.mediaMetadata = FFProbe.getMediaMetadata(media.toString());
+            }
+            if (this.mediaMetadata == null) {
                 this.seekTime = Duration.ZERO;
-            } else if (seekTime.toMillis() > duration.toMillis()) {
+            } else if (builder.seekTime.toMillis() > mediaMetadata.getDuration().toMillis()) {
                 this.seekTime = Duration.ZERO;
             } else {
-                this.seekTime = seekTime;
+                this.seekTime = builder.seekTime;
             }
         } catch (Exception e) {
-            logger.warn("Error parsing duration, using seek time of ZERO", e);
+            logger.warn("Error parsing metadata, using seek time of ZERO", e);
             this.seekTime = Duration.ZERO;
         }
     }
 
     /**
      * Play the media using ffplay.
+     *
      * <p>This method will start an ffplay process on a separate Thread, so the
      * caller will not be blocked. It will also register a shutdown hook to
      * stop the process in the event that the calling application exits before
@@ -209,13 +239,45 @@ public class FFPlay<T> {
     }
 
     /**
+     * Get the parsed metadata for the media.
+     *
+     * @return metadata that was parsed from the media.
+     */
+    public MediaMetadata getMediaMetadata() {
+        return mediaMetadata;
+    }
+
+    /**
      * Get the set seek time, which is where playback will begin.
+     *
+     * <p>If not set, the default is Duration.ZERO.</p>
      *
      * @return seek time.
      */
     public Duration getSeekTime() {
         return seekTime;
     }
+
+    /**
+     * Set the seek time, which is where playback will begin.
+     *
+     * @param seekTime the time to begin playback.
+     */
+    public void setSeekTime(Duration seekTime) {
+        this.seekTime = seekTime;
+    }
+
+    /**
+     * Get the value of the display flag.
+     *
+     * <p>The default value is false.</p>
+     *
+     * @return true if the display flag is set, false otherwise.
+     */
+    public boolean isDisplay() {
+        return this.display;
+    }
+
 
     private class PlayerShutdownHook implements Runnable {
         FFPlay<T> player;
