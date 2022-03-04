@@ -23,7 +23,7 @@
     <groupId>net.jeremybrooks</groupId>
     <artifactId>pressplay</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <name>pressplay</name>
     <description>Library to make it easy to play music from Java.</description>
     <url>https://jeremybrooks.net/pressplay</url>
