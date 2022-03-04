@@ -48,5 +48,10 @@ export JDK_JAVA_OPTIONS='--add-opens java.base/java.util=ALL-UNNAMED --add-opens
     3. push the tag `git push origin --tags`
     4. update the version in pom.xml for the next snapshot
     5. commit and push
+6. Clear your JDK options:
+
+```
+unset JDK_JAVA_OPTIONS
+```
 
 
