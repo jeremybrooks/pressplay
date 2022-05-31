@@ -42,7 +42,68 @@ public class FFProbeTest {
         assertEquals("Unknown Artist", metadata.getArtist());
         assertEquals("Unknown Album", metadata.getAlbum());
         assertEquals("1", metadata.getTrack());
+        assertEquals(1, metadata.getTrackNumber());
+        assertEquals(0, metadata.getTotalTracks());
         assertEquals("", metadata.getDisc());
+        assertEquals(0, metadata.getDiscNumber());
+        assertEquals(0, metadata.getTotalDiscs());
         assertFalse(metadata.isCompilation());
+    }
+
+    @Test
+    public void testNoTrackNoDisc() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test-notrack-nodisc.mp3");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertEquals("Artist One", metadata.getArtist());
+        assertEquals("Album One", metadata.getAlbum());
+        assertEquals("", metadata.getTrack());
+        assertEquals(0, metadata.getTrackNumber());
+        assertEquals(0, metadata.getTotalTracks());
+        assertEquals("", metadata.getDisc());
+        assertEquals(0, metadata.getDiscNumber());
+        assertEquals(0, metadata.getTotalDiscs());
+    }
+
+    @Test
+    public void testDiscsAndTracks() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test-discs-and-tracks.mp3");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        System.out.println(metadata);
+        assertNotNull(metadata);
+        assertEquals("5/10", metadata.getTrack());
+        assertEquals(5, metadata.getTrackNumber());
+        assertEquals(10, metadata.getTotalTracks());
+        assertEquals("2/2", metadata.getDisc());
+        assertEquals(2, metadata.getDiscNumber());
+        assertEquals(2, metadata.getTotalDiscs());
+    }
+
+    @Test
+    public void testDiscsNoTracks() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test-discs-no-tracks.mp3");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertEquals(1, metadata.getDiscNumber());
+        assertEquals(2, metadata.getTotalDiscs());
+    }
+
+    @Test
+    public void testTracksNoDisc() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test-tracks-no-disc.mp3");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertEquals(1, metadata.getTrackNumber());
+        assertEquals(4, metadata.getTotalTracks());
+        assertEquals(0, metadata.getDiscNumber());
+        assertEquals(0, metadata.getTotalDiscs());
     }
 }

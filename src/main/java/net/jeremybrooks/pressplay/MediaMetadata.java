@@ -22,11 +22,49 @@ package net.jeremybrooks.pressplay;
 import com.google.gson.Gson;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An object to encapsulate the metadata parsed from a media file.
  */
 public class MediaMetadata {
+
+    /**
+     * Get the track number as an int.
+     *
+     * @return track number, or zero if the track number isn't available.
+     */
+    public int getTrackNumber() {
+        return parseTrackOrDiscData(getTrack()).get(0);
+    }
+
+    /**
+     * Get the total number of tracks as an int.
+     *
+     * @return total number of tracks, or zero if the total number of tracks isn't available.
+     */
+    public int getTotalTracks() {
+        return parseTrackOrDiscData(getTrack()).get(1);
+    }
+
+    /**
+     * Get the disk number as an int.
+     *
+     * @return disc number, or zero if the disc number isn't available.
+     */
+    public int getDiscNumber() {
+        return parseTrackOrDiscData(getDisc()).get(0);
+    }
+
+    /**
+     * Get the total number of discs as an int.
+     *
+     * @return total number of discs, or zero if the total number of discs isn't available.
+     */
+    public int getTotalDiscs() {
+        return parseTrackOrDiscData(getDisc()).get(1);
+    }
 
     /**
      * Get the duration of the media file represented as a Duration object.
@@ -122,7 +160,12 @@ public class MediaMetadata {
      * @return disc number if available, empty String otherwise.
      */
     public String getDisc() {
-        return format.tags.disc == null ? "" : format.tags.disc;
+        // sometimes the disc info is in the tag "TPA", so check it if "disc" is null
+        if (format.tags.disc == null) {
+            return format.tags.TPA == null ? "" : format.tags.TPA;
+        } else {
+            return format.tags.disc;
+        }
     }
 
     /**
@@ -203,6 +246,7 @@ public class MediaMetadata {
 
         private class Tags {
             private String disc;
+            private String TPA;
             private String title;
             private String artist;
             private String album;
@@ -222,4 +266,30 @@ public class MediaMetadata {
         return new Gson().toJson(this);
     }
 
+    private List<Integer> parseTrackOrDiscData(String data) {
+        List<Integer> result = new ArrayList<>();
+        if (data == null || data.trim().length() == 0) {
+            result.add(0);
+            result.add(0);
+        } else {
+            data = data.trim();
+            int firstNumber = 0;
+            int secondNumber = 0;
+            try {
+                int index = data.indexOf('/');
+                if (index == -1) {
+                    firstNumber = Integer.parseInt(data);
+                } else {
+                    firstNumber = Integer.parseInt(data.substring(0, index));
+                    secondNumber = Integer.parseInt(data.substring(index + 1));
+                }
+            } catch (Exception e) {
+                // ignore number parse errors
+            } finally {
+                result.add(firstNumber);
+                result.add(secondNumber);
+            }
+        }
+        return result;
+    }
 }
