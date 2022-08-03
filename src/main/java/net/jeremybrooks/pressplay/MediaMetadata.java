@@ -223,6 +223,15 @@ public class MediaMetadata {
     }
 
     /**
+     * Get the album artist parsed from the media.
+     *
+     * @return album artist if available, empty String otherwise.
+     */
+    public String getAlbumArtist() {
+        return format.tags.album_artist == null ? "" : format.tags.album_artist;
+    }
+
+    /**
      * Get compilation flag parsed from the media.
      *
      * @return true if media is part of a compilation, false otherwise.
@@ -254,6 +263,8 @@ public class MediaMetadata {
             private String track;
             private String date;
             private String compilation;
+
+            private String album_artist;
         }
     }
 

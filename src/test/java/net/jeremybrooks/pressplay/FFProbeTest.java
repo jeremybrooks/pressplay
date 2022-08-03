@@ -106,4 +106,15 @@ public class FFProbeTest {
         assertEquals(0, metadata.getDiscNumber());
         assertEquals(0, metadata.getTotalDiscs());
     }
+
+    @Test
+    public void testVariousArtists() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test-various-artists.mp3");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertEquals("Various Artists", metadata.getAlbumArtist());
+        assertTrue(metadata.isCompilation());
+    }
 }
