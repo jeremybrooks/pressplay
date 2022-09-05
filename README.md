@@ -1,10 +1,19 @@
-PressPlay makes it easy to play media from Java using the ffmpeg tools.
+PressPlay makes it easy for your Java applications to play media and parse metadata using the ffmpeg tools.
 
 # Requirements
 
 - ffmpeg must be installed on the machine where you want to play media
 - Java 11 or higher is required
 - PressPlay uses log4j2 for logging; your application must provide this dependency
+
+### Location of ffmpeg
+
+If the ffmpeg tools are not installed at /usr/local/bin, you will need to set a system property so pressplay knows where
+to find the tools:
+
+```
+pressplay.ffmpeg.path=/full/path/to/tools/
+```
 
 # Maven
 
@@ -18,14 +27,11 @@ If you are using Maven, you can get the pressplay library with this dependency:
 </dependency>
 ```
 
-# Location of ffmpeg
+# Using PressPlay
 
-If the ffmpeg tools are not installed at /usr/local/bin, you will need to set a system property so pressplay knows where
-to find the tools:
+## Playing Media
 
-```
-pressplay.ffmpeg.path=/full/path/to/tools/
-```
+## Parsing Metadata
 
 ---
 

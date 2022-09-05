@@ -117,4 +117,15 @@ public class FFProbeTest {
         assertEquals("Various Artists", metadata.getAlbumArtist());
         assertTrue(metadata.isCompilation());
     }
+
+    @Test
+    public void testMissing() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test.ogg");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertFalse(metadata.isCompilation());
+        assertEquals("", metadata.getArtist());
+    }
 }
