@@ -88,7 +88,7 @@ public class MediaMetadata {
      * @return duration of the media file.
      */
     public String getDurationAsString() {
-        return format.duration == null ? "" : format.duration;
+        return (format == null || format.duration == null) ? "" : format.duration;
     }
 
     /**
@@ -97,7 +97,7 @@ public class MediaMetadata {
      * @return filename if available, empty String otherwise.
      */
     public String getFilename() {
-        return format.filename == null ? "" : format.filename;
+        return (format == null || format.filename == null) ? "" : format.filename;
     }
 
     /**
@@ -106,7 +106,7 @@ public class MediaMetadata {
      * @return number of streams if available, zero otherwise.
      */
     public int getNumberStreams() {
-        return format.nb_streams;
+        return format == null ? 0 : format.nb_streams;
     }
 
     /**
@@ -115,7 +115,7 @@ public class MediaMetadata {
      * @return number of programs if available, zero otherwise.
      */
     public int getNumberPrograms() {
-        return format.nb_programs;
+        return format == null ? 0 : format.nb_programs;
     }
 
     /**
@@ -124,7 +124,7 @@ public class MediaMetadata {
      * @return format name if available, empty String otherwise.
      */
     public String getFormatName() {
-        return format.format_name == null ? "" : format.format_name;
+        return (format == null || format.format_name == null) ? "" : format.format_name;
     }
 
     /**
@@ -133,7 +133,7 @@ public class MediaMetadata {
      * @return format long name if available, empty String otherwise.
      */
     public String getFormatLongName() {
-        return format.format_long_name == null ? "" : format.format_long_name;
+        return (format == null || format.format_long_name == null) ? "" : format.format_long_name;
     }
 
     /**
@@ -142,7 +142,7 @@ public class MediaMetadata {
      * @return size if available, empty String otherwise.
      */
     public String getSize() {
-        return format.size == null ? "" : format.size;
+        return (format == null || format.size == null) ? "" : format.size;
     }
 
     /**
@@ -151,7 +151,7 @@ public class MediaMetadata {
      * @return bit rate if available, empty String otherwise.
      */
     public String getBitRate() {
-        return format.bit_rate == null ? "" : format.bit_rate;
+        return (format == null || format.bit_rate == null) ? "" : format.bit_rate;
     }
 
     /**
@@ -161,7 +161,7 @@ public class MediaMetadata {
      */
     public String getDisc() {
         // sometimes the disc info is in the tag "TPA", so check it if "disc" is null
-        if (format.tags == null) {
+        if (format == null || format.tags == null) {
             return "";
         } else if (format.tags.disc == null) {
             return format.tags.TPA == null ? "" : format.tags.TPA;
@@ -176,7 +176,7 @@ public class MediaMetadata {
      * @return title if available, empty String otherwise.
      */
     public String getTitle() {
-        return (format.tags == null || format.tags.title == null) ? "" : format.tags.title;
+        return (format == null || format.tags == null || format.tags.title == null) ? "" : format.tags.title;
     }
 
     /**
@@ -185,7 +185,7 @@ public class MediaMetadata {
      * @return artist if available, empty String otherwise.
      */
     public String getArtist() {
-        return (format.tags == null || format.tags.artist == null) ? "" : format.tags.artist;
+        return (format == null || format.tags == null || format.tags.artist == null) ? "" : format.tags.artist;
     }
 
     /**
@@ -194,7 +194,7 @@ public class MediaMetadata {
      * @return album if available, empty String otherwise.
      */
     public String getAlbum() {
-        return (format.tags == null || format.tags.album == null) ? "" : format.tags.album;
+        return (format == null || format.tags == null || format.tags.album == null) ? "" : format.tags.album;
     }
 
     /**
@@ -203,7 +203,7 @@ public class MediaMetadata {
      * @return genre if available, empty String otherwise.
      */
     public String getGenre() {
-        return (format.tags == null || format.tags.genre == null) ? "" : format.tags.genre;
+        return (format == null || format.tags == null || format.tags.genre == null) ? "" : format.tags.genre;
     }
 
     /**
@@ -212,7 +212,7 @@ public class MediaMetadata {
      * @return track if available, empty String otherwise.
      */
     public String getTrack() {
-        return (format.tags == null || format.tags.track == null) ? "" : format.tags.track;
+        return (format == null || format.tags == null || format.tags.track == null) ? "" : format.tags.track;
     }
 
     /**
@@ -221,7 +221,7 @@ public class MediaMetadata {
      * @return date if available, empty String otherwise.
      */
     public String getDate() {
-        return (format.tags == null || format.tags.date == null) ? "" : format.tags.date;
+        return (format == null || format.tags == null || format.tags.date == null) ? "" : format.tags.date;
     }
 
     /**
@@ -230,7 +230,7 @@ public class MediaMetadata {
      * @return album artist if available, empty String otherwise.
      */
     public String getAlbumArtist() {
-        return (format.tags == null || format.tags.album_artist == null) ? "" : format.tags.album_artist;
+        return (format == null || format.tags == null || format.tags.album_artist == null) ? "" : format.tags.album_artist;
     }
 
     /**
@@ -239,7 +239,7 @@ public class MediaMetadata {
      * @return true if media is part of a compilation, false otherwise.
      */
     public boolean isCompilation() {
-        if (format.tags == null) {
+        if (format == null || format.tags == null) {
             return false;
         } else {
             return null != format.tags.compilation && format.tags.compilation.equals("1");

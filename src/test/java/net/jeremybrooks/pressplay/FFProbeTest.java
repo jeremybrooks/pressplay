@@ -128,4 +128,38 @@ public class FFProbeTest {
         assertFalse(metadata.isCompilation());
         assertEquals("", metadata.getArtist());
     }
+
+    /**
+     * Test that sane values are returned when parsing a file that
+     * can't be parsed and doesn't contain any metadata.
+     *
+     * @throws Exception if there are errors.
+     */
+    @Test
+    public void testParseUnsupportedFile() throws Exception {
+        URL url = FFProbeTest.class.getResource("/test.pdf");
+        assertNotNull(url);
+        Path p = Paths.get(url.toURI());
+        MediaMetadata metadata = FFProbe.getMediaMetadata(p.toString());
+        assertNotNull(metadata);
+        assertFalse(metadata.isCompilation());
+        assertEquals(0, metadata.getTrackNumber());
+        assertEquals(0, metadata.getNumberStreams());
+        assertEquals(0, metadata.getNumberPrograms());
+
+        assertEquals("", metadata.getFormatName());
+        assertEquals("", metadata.getFormatLongName());
+        assertEquals("", metadata.getSize());
+        assertEquals("", metadata.getBitRate());
+        assertEquals("", metadata.getDisc());
+        assertEquals("", metadata.getTitle());
+        assertEquals("", metadata.getArtist());
+        assertEquals("", metadata.getAlbum());
+        assertEquals("", metadata.getGenre());
+        assertEquals("", metadata.getTrack());
+        assertEquals("", metadata.getDate());
+        assertEquals("", metadata.getAlbumArtist());
+        assertEquals("", metadata.getDurationAsString());
+        assertEquals("", metadata.getFilename());
+    }
 }
