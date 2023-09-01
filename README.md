@@ -8,7 +8,8 @@ PressPlay makes it easy for your Java applications to play media and parse metad
 
 ### Location of ffmpeg
 
-If the ffmpeg tools are not installed at /usr/local/bin, you will need to set a system property so pressplay knows where
+If the ffmpeg tools are not installed at /usr/local/bin or /usr/bin, you will need to set a system property so pressplay
+knows where
 to find the tools:
 
 ```
@@ -23,7 +24,7 @@ If you are using Maven, you can get the pressplay library with this dependency:
 <dependency>
   <groupId>net.jeremybrooks</groupId>
   <artifactId>pressplay</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
 </dependency>
 ```
 
