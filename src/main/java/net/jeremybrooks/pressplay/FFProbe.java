@@ -1,5 +1,5 @@
 /*
- * PressPlay is Copyright 2022 by Jeremy Brooks
+ * PressPlay is Copyright 2022-2025 by Jeremy Brooks
  *
  * This file is part of PressPlay.
  *
@@ -47,7 +47,7 @@ public class FFProbe {
      * @throws IOException if there is an error while parsing the media.
      */
     public static MediaMetadata getMediaMetadata(String media) throws IOException {
-        if (media == null || media.trim().length() == 0) {
+        if (media == null || media.trim().isEmpty()) {
             return null;
         }
         MediaMetadata metadata = null;

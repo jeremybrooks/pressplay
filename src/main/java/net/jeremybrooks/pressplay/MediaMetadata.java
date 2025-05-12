@@ -1,5 +1,5 @@
 /*
- * PressPlay is Copyright 2022 by Jeremy Brooks
+ * PressPlay is Copyright 2022-2025 by Jeremy Brooks
  *
  * This file is part of PressPlay.
  *
@@ -71,7 +71,7 @@ public class MediaMetadata {
      *
      * <p>The resolution of this duration is milliseconds.</p>
      *
-     * @return duration of the media file, or Duration.ZERO if the duration isn't known.
+     * @return duration of the media file, or Duration. ZERO if the duration isn't known.
      */
     public Duration getDuration() {
         try {
@@ -248,7 +248,7 @@ public class MediaMetadata {
 
     private Format format;
 
-    private class Format {
+    private static class Format {
         private String filename;
         private int nb_streams;
         private int nb_programs;
@@ -285,7 +285,7 @@ public class MediaMetadata {
 
     private List<Integer> parseTrackOrDiscData(String data) {
         List<Integer> result = new ArrayList<>();
-        if (data == null || data.trim().length() == 0) {
+        if (data == null || data.trim().isEmpty()) {
             result.add(0);
             result.add(0);
         } else {

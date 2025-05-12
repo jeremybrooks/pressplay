@@ -1,5 +1,5 @@
 /*
- * PressPlay is Copyright 2022 by Jeremy Brooks
+ * PressPlay is Copyright 2022-2025 by Jeremy Brooks
  *
  * This file is part of PressPlay.
  *
@@ -22,6 +22,7 @@ package net.jeremybrooks.pressplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -58,8 +59,8 @@ public class PressPlay {
                 path = "/usr/bin/";
             }
         }
-        if (!path.endsWith(System.getProperty("file.separator"))) {
-            path = path + System.getProperty("file.separator");
+        if (!path.endsWith(FileSystems.getDefault().getSeparator())) {
+            path = path + FileSystems.getDefault().getSeparator();
         }
         logger.info("Using ffmpeg tools path {}", path);
         FFPROBE = path + "ffprobe";

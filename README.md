@@ -24,7 +24,7 @@ If you are using Maven, you can get the pressplay library with this dependency:
 <dependency>
   <groupId>net.jeremybrooks</groupId>
   <artifactId>pressplay</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
 </dependency>
 ```
 
